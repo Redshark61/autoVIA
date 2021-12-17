@@ -4,11 +4,15 @@ from datetime import date
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
+# get the day number
+day = date.today().day
+
 firstname = input("Entre ton prénom : ")
 lastname = input("Entre ton nom : ")
 # whatWasDid = input("Qu'a tus fait (10 réponses séparé par des ,) : \n").split(",")
 choices = ["Cours", "Projet", "Cours", "Projet",
            "Cours", "Projet", "Dojo", "Projet", "Cours"]
+random.seed(day)
 random.shuffle(choices)
 whatWasDid = [done for done in choices]
 driver = webdriver.Chrome('./chromedriver.exe')
