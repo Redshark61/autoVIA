@@ -1,22 +1,67 @@
 import time
+import sys
+import os
 import random
 from datetime import date
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-
+os.system('')
 # get the day number
 day = date.today().day
 
-# Get the first name, last name
-firstname = input("Entre ton prénom : ")
-lastname = input("Entre ton nom : ")
+# Set the variables
+choices = ["Cours", "Projet", "Cours", "Projet", "Cours", "Projet", "Dojo", "Projet", "Cours"]
+argList = ["--offset", "--work"]
+indexWork = -1
 
-# The different choice for was was done during the week
-choices = ["Cours", "Projet", "Cours", "Projet",
-           "Cours", "Projet", "Dojo", "Projet", "Cours"]
-random.seed(day)
-# Randomize the list
-random.shuffle(choices)
+# If arguments are given
+if len(sys.argv) > 1:
+
+    # Check if there is either --offset or --work or both
+    try:
+        indexOffset = sys.argv.index(argList[0])
+    except ValueError:
+        indexOffset = -1
+    try:
+        indexWork = sys.argv.index(argList[1])
+    except ValueError:
+        indexWork = -1
+
+    # For --offset
+    if indexOffset > -1:
+        # Check if the argument is a number
+        try:
+            if sys.argv[indexOffset+1].isdigit():
+                # If it's a number, set the offset
+                day -= int(sys.argv[indexOffset + 2])
+            else:
+                print("\033[31mThe argument after --offset must be a number \033[0m")
+                input("Press enter to exit")
+                sys.exit()
+        except IndexError:
+            print("\033[31mNo arguments given\033[0m")
+            input("Press enter to exit")
+            sys.exit()
+
+    if indexWork > -1:
+        if len(sys.argv[indexWork+1:]) == 9:
+            choices = sys.argv[indexWork+1:]
+        else:
+            print("\033[31mYou must give 9 arguments after --work \033[0m")
+            input("Press enter to exit")
+            sys.exit()
+
+# Get the first name, last name
+firstname = input("Entre ton prénom : (vide pour quitter)")
+lastname = input("Entre ton nom : (vide pour quitter)")
+if lastname == '':
+    sys.exit()
+
+if indexWork > -1:
+    # The different choice for was was done during the week
+    random.seed(day)
+    # Randomize the list
+    random.shuffle(choices)
 
 # Open the browser
 driver = webdriver.Chrome('./chromedriver.exe')
